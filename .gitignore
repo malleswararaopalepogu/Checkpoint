@@ -1,0 +1,68 @@
+# =========================
+# Spring Boot / Maven
+# =========================
+**/target/
+
+# =========================
+# React / Node
+# =========================
+**/node_modules/
+**/dist/
+**/build/
+
+# =========================
+# Environment / Secrets
+# =========================
+.env
+**/.env
+*.env
+
+# =========================
+# Eclipse
+# =========================
+.classpath
+.project
+.settings/
+
+# =========================
+# VS Code
+# =========================
+.vscode/
+
+# =========================
+# OS generated files
+# =========================
+.DS_Store
+Thumbs.db
+
+# Eclipse workspace
+Backend/.metadata/
+
+# ZIP files
+*.zip
+
+# Maven
+**/target/
+
+# Node / React
+**/node_modules/
+**/dist/
+**/build/
+
+# Environment files
+.env
+
+**/.env
+**/.env.local
+
+# Eclipse project metadata
+.classpath
+.project
+.settings/
+
+# VS Code
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
