@@ -10,5 +10,5 @@ import com.project.checkpoint.entity.Userentity;
 public interface UserRepository extends JpaRepository<Userentity, Long>{
 
 	Optional<Userentity> findByEmail(String email);
-	
+	Boolean existsByEmail(String email);
 }

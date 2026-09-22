@@ -26,5 +26,4 @@ public class AppUserDetailsService implements UserDetailsService {
 				.orElseThrow(()->new UsernameNotFoundException("Email not found for the email"+email));
 		return new User(existinguser.getEmail(),existinguser.getPassword(),new ArrayList<>());
 	}
-
 }

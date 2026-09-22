@@ -2,7 +2,10 @@ package com.project.checkpoint.ProfileService;
 
 import java.util.UUID;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.project.checkpoint.entity.Userentity;
 import com.project.checkpoint.io.ProfileRequest;
@@ -16,11 +19,15 @@ import lombok.RequiredArgsConstructor;
 public class ProfileServiceImp implements ProfileService {
  
 	private final UserRepository userRepo;
+	private final PasswordEncoder passwordencoder;
 	
 	public ProfileResponse createProfile(ProfileRequest request) {
 		Userentity newProfile = convertToUserEntity(request);
-		newProfile = userRepo.save(newProfile);
-		return  convertToProfileResponse(newProfile);
+		if(!userRepo.existsByEmail(request.getEmail())) {
+			newProfile = userRepo.save(newProfile);
+			return  convertToProfileResponse(newProfile);
+		}
+		throw new ResponseStatusException(HttpStatus.CONFLICT,"Email Already exists");
 	}
 	
 	private Userentity convertToUserEntity(ProfileRequest request)
@@ -29,7 +36,7 @@ public class ProfileServiceImp implements ProfileService {
 				.userId(UUID.randomUUID().toString())
 				.name(request.getName())
 				.email(request.getEmail())
-				.password(request.getPassword())
+				.password(passwordencoder.encode(request.getPassword()))
 				.verifyOtp(null)
 				.isAccountVerified(false)
 				.verifyOtpExpireAt(0L)
@@ -44,7 +51,7 @@ public class ProfileServiceImp implements ProfileService {
 		return ProfileResponse.builder()
 				.UserId(newProfile.getUserId())
 				.name(newProfile.getName())
-				.email(newProfile.getName())
+				.email(newProfile.getEmail())
 				.isAccountVerified(newProfile.getIsAccountVerified())
 				.build();
 	}
