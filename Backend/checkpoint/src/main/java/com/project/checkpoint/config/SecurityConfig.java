@@ -22,6 +22,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import com.project.checkpoint.ProfileService.AppUserDetailsService;
+import com.project.checkpoint.filter.JwtRequestFilter;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,6 +32,8 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
 	private final AppUserDetailsService appUserDetailsService;
+	private final JwtRequestFilter jwtRequestFilter;
+	private final customAuthenticationEntryPoint customauthenticationEntryPoint;
 	
 	@Bean
 	public SecurityFilterChain securityfilterchain(HttpSecurity http) throws Exception
@@ -38,13 +41,13 @@ public class SecurityConfig {
 		http.cors(Customizer.withDefaults())
 			.csrf(AbstractHttpConfigurer::disable)
 			.authorizeHttpRequests(auth->auth
-					.requestMatchers("/login","/register","/send-reset-otp","/logout")
+					.requestMatchers("/login","/register","/send-reset-otp","/logout","/reset-password")
 					.permitAll().anyRequest().authenticated())
 			.sessionManagement(session->session
 					.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-			.logout(AbstractHttpConfigurer :: disable);
-			//.addFilterBefore(jwtRequestFilter,UsernamePasswordAuthenticationFilter.class)
-			//.exceptionHandling(ex->ex.authenticationEntryPoint(customAuthenticationEntryPoint));
+			.logout(AbstractHttpConfigurer :: disable)
+			.addFilterBefore(jwtRequestFilter,UsernamePasswordAuthenticationFilter.class)
+			.exceptionHandling(ex->ex.authenticationEntryPoint(customauthenticationEntryPoint));
 		return http.build();
 			
 	}
