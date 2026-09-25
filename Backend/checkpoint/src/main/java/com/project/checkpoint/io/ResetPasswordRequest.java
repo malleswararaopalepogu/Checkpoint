@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 public class ResetPasswordRequest {
 
 	@NotNull(message = "newpassword is required")
-	private String newpassword;
+	private String newPassword;
 	
 	@NotNull(message= "otp is required")
 	private String otp;

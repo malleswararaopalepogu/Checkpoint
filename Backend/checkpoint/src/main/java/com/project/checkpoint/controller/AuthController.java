@@ -13,6 +13,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +30,8 @@ import com.project.checkpoint.io.AuthResponse;
 import com.project.checkpoint.io.ResetPasswordRequest;
 import com.project.checkpoint.util.JwtUtil;
 
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -86,9 +89,12 @@ public class AuthController {
 	}
 	
 	@GetMapping("/is-authenticated")
-	public ResponseEntity<Boolean> isAuthenticated(@CurrentSecurityContext(expression = "authentication?.name") String email)
+	public ResponseEntity<Boolean> isAuthenticated(Authentication authentication)
 	{
-		return ResponseEntity.ok(email!=null);
+		boolean authenticated = authentication != null
+				&& authentication.isAuthenticated()
+				&& authentication.getPrincipal() instanceof UserDetails;
+		return ResponseEntity.ok(authenticated);
 	}
 	
 	@PostMapping("/send-reset-otp")
@@ -105,7 +111,7 @@ public class AuthController {
 	public void resetPassword(@Valid @RequestBody ResetPasswordRequest request)
 	{
 		try {
-			profileService.resetPassword(request.getEmail(), request.getNewpassword(), request.getOtp());
+			profileService.resetPassword(request.getEmail(), request.getNewPassword(), request.getOtp());
 			
 		} catch (Exception e) {
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,e.getMessage());
@@ -133,6 +139,19 @@ public class AuthController {
 		} catch (Exception e) {
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,e.getMessage());
 		}
+	}
+	
+	@PostMapping("/logout")
+	public ResponseEntity<?> logout(HttpServletResponse reponse)
+	{
+		ResponseCookie cookie=ResponseCookie.from("jwt","")
+										.httpOnly(true)
+										.secure(false)
+										.path("/")
+										.maxAge(0)
+										.sameSite("Strict")
+										.build();
+		return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE,cookie.toString()).body("Logged Out Successfully");
 	}
 	
 	

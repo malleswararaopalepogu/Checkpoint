@@ -19,7 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
+import org.springframework.http.HttpMethod;
 
 import com.project.checkpoint.ProfileService.AppUserDetailsService;
 import com.project.checkpoint.filter.JwtRequestFilter;
@@ -38,13 +38,38 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain securityfilterchain(HttpSecurity http) throws Exception
 	{
-		http.cors(Customizer.withDefaults())
+		http
+        .cors(cors -> cors.configurationSource(request -> {
+
+            CorsConfiguration config = new CorsConfiguration();
+
+            config.setAllowedOrigins(
+                List.of("http://localhost:5173")
+            );
+
+            config.setAllowedMethods(
+                List.of(
+                    "GET",
+                    "POST",
+                    "PUT",
+                    "DELETE",
+                    "PATCH",
+                    "OPTIONS"
+                )
+            );
+
+            config.setAllowedHeaders(List.of("*"));
+
+            config.setAllowCredentials(true);
+
+            return config;
+        }))
 			.csrf(AbstractHttpConfigurer::disable)
 			.authorizeHttpRequests(auth->auth
-					.requestMatchers("/login","/register","/send-reset-otp","/logout","/reset-password")
+					.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+					.requestMatchers("/login","/register","/send-reset-otp","/logout","/reset-password","/is-authenticated")
 					.permitAll().anyRequest().authenticated())
-			.sessionManagement(session->session
-					.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+			.sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.logout(AbstractHttpConfigurer :: disable)
 			.addFilterBefore(jwtRequestFilter,UsernamePasswordAuthenticationFilter.class)
 			.exceptionHandling(ex->ex.authenticationEntryPoint(customauthenticationEntryPoint));
@@ -58,13 +83,14 @@ public class SecurityConfig {
 		return new BCryptPasswordEncoder();
 	}
 	
-	@Bean
-	public CorsFilter corsfilter()
-	{
-		return new CorsFilter(corsconfigurationsource());
-	}
+//	@Bean
+//	public CorsFilter corsfilter()
+//	{
+//		return new CorsFilter(corsconfigurationsource());
+//	}
 	
-	private CorsConfigurationSource corsconfigurationsource()
+	@Bean
+	public CorsConfigurationSource corsconfigurationsource()
 	{
 		CorsConfiguration config=new CorsConfiguration();
 		config.setAllowedOrigins(List.of("http://localhost:5173"));

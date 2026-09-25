@@ -33,8 +33,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
-		
-		String path=request.getServletPath();
+		 
+		if (request.getMethod().equalsIgnoreCase("OPTIONS")) {
+	        filterChain.doFilter(request, response);
+	        return;
+	    }
+		String path=request.getContextPath()+request.getServletPath();
 		if(PUBLIC_URLS.contains(path))
 		{
 			filterChain.doFilter(request, response);
@@ -78,7 +82,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 				}
 			}
 		}
-		
+		 
 		filterChain.doFilter(request, response);
 	}
 	

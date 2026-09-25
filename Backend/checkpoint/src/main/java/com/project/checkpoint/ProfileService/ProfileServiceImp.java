@@ -93,7 +93,7 @@ public class ProfileServiceImp implements ProfileService {
 	@Override
 	public void resetPassword(String email,String newpassword, String otp) {
 		Userentity existinguser=userRepo.findByEmail(email).orElseThrow(()->new UsernameNotFoundException("username not found with : "+email));
-		if(existinguser.getResetOtp()==null && !existinguser.getResetOtp().equals(otp) )
+		if(existinguser.getResetOtp()==null || !existinguser.getResetOtp().equals(otp) )
 		{
 			throw new RuntimeException("Invalid OTP");
 		}
