@@ -41,6 +41,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 		if (contextPath != null && !contextPath.isBlank() && requestUri.startsWith(contextPath)) {
 			requestUri = requestUri.substring(contextPath.length());
 		}
+		System.out.println("JWT_FILTER => Method: " + request.getMethod()
+			+ ", OriginalURI: " + request.getRequestURI()
+			+ ", StrippedURI: " + requestUri
+			+ ", isPublic: " + PUBLIC_URLS.contains(requestUri));
 		if(PUBLIC_URLS.contains(requestUri))
 		{
 			filterChain.doFilter(request, response);
