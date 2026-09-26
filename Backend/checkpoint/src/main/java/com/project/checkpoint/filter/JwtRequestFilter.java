@@ -27,7 +27,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 	private final AppUserDetailsService appUserDetailsService;
 	private final JwtUtil jwtutil;
 	
-	private static final List<String> PUBLIC_URLS=List.of("/api/v1.0/login","/api/v1.0/register","/api/v1.0/send-reset-otp","/api/v1.0/reset-password","/api/v1.0/logout");
+	private static final List<String> PUBLIC_URLS=List.of("/login","/register","/send-reset-otp","/reset-password","/logout","/is-authenticated");
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
