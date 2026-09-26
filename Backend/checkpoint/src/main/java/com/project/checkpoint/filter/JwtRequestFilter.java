@@ -38,8 +38,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 	        filterChain.doFilter(request, response);
 	        return;
 	    }
-		String path=request.getContextPath()+request.getServletPath();
-		if(PUBLIC_URLS.contains(path))
+		String requestUri = request.getRequestURI();
+		String contextPath = request.getContextPath();
+		if (contextPath != null && !contextPath.isBlank() && requestUri.startsWith(contextPath)) {
+			requestUri = requestUri.substring(contextPath.length());
+		}
+		if(PUBLIC_URLS.contains(requestUri))
 		{
 			filterChain.doFilter(request, response);
 			return;
