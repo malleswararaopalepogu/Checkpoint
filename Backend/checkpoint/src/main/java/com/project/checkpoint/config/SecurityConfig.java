@@ -44,7 +44,7 @@ public class SecurityConfig {
             CorsConfiguration config = new CorsConfiguration();
 
             config.setAllowedOriginPatterns(
-                List.of(frontendOrigin, "http://localhost:5173", "http://127.0.0.1:5173")
+                List.of("frontendOrigin", "http://localhost:5173", "http://127.0.0.1:5173")
             );
 
             config.setAllowedMethods(
@@ -93,7 +93,7 @@ public class SecurityConfig {
 	public CorsConfigurationSource corsconfigurationsource()
 	{
 		CorsConfiguration config=new CorsConfiguration();
-		config.setAllowedOriginPatterns(List.of(frontendOrigin, "http://localhost:5173", "http://127.0.0.1:5173"));
+		config.setAllowedOriginPatterns(List.of("frontendOrigin", "http://localhost:5173", "http://127.0.0.1:5173"));
 		config.setAllowedMethods(List.of("GET","POST","PUT","DELETE","PATCH","OPTIONS"));
 		config.setAllowedHeaders(List.of("*"));
 		config.setAllowCredentials(true);
