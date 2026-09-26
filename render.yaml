@@ -4,7 +4,6 @@ services:
     runtime: docker
     plan: free
     dockerfilePath: ./Backend/checkpoint/Dockerfile
-    dockerContext: ./Backend/checkpoint
     envVars:
       - key: DB_URL
         sync: false
