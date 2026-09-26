@@ -2,7 +2,6 @@ package com.project.checkpoint.config;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,9 +31,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-	@Value("${app.cors.allowed-origin:http://localhost:5173}")
-	private String frontendOrigin;
-
 	private final AppUserDetailsService appUserDetailsService;
 	private final JwtRequestFilter jwtRequestFilter;
 	private final customAuthenticationEntryPoint customauthenticationEntryPoint;
@@ -47,7 +43,9 @@ public class SecurityConfig {
 
             CorsConfiguration config = new CorsConfiguration();
 
-            config.setAllowedOriginPatterns(List.of("*"));
+            config.setAllowedOriginPatterns(
+                List.of(frontendOrigin, "http://localhost:5173", "http://127.0.0.1:5173")
+            );
 
             config.setAllowedMethods(
                 List.of(
@@ -69,7 +67,7 @@ public class SecurityConfig {
 			.csrf(AbstractHttpConfigurer::disable)
 			.authorizeHttpRequests(auth->auth
 					.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-					.requestMatchers("/api/v1.0/login","/api/v1.0/register","/api/v1.0/send-reset-otp","/api/v1.0/logout","/api/v1.0/reset-password","/api/v1.0/is-authenticated")
+					.requestMatchers("/login","/register","/send-reset-otp","/logout","/reset-password","/is-authenticated")
 					.permitAll().anyRequest().authenticated())
 			.sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.logout(AbstractHttpConfigurer :: disable)
@@ -95,7 +93,7 @@ public class SecurityConfig {
 	public CorsConfigurationSource corsconfigurationsource()
 	{
 		CorsConfiguration config=new CorsConfiguration();
-		config.setAllowedOriginPatterns(List.of("*"));
+		config.setAllowedOriginPatterns(List.of(frontendOrigin, "http://localhost:5173", "http://127.0.0.1:5173"));
 		config.setAllowedMethods(List.of("GET","POST","PUT","DELETE","PATCH","OPTIONS"));
 		config.setAllowedHeaders(List.of("*"));
 		config.setAllowCredentials(true);
