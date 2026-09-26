@@ -1,5 +1,6 @@
 package com.project.checkpoint.controller;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import java.time.Duration;
 import java.util.HashMap;
@@ -39,6 +40,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthController {
 
+	@Value("${app.cookie.secure:false}")
+	private boolean cookieSecure;
+
+	@Value("${app.cookie.same-site:Lax}")
+	private String cookieSameSite;
+
 	private final AuthenticationManager authenticationManager;
 	private final AppUserDetailsService appUserDetailsService;
 	private final JwtUtil jwtutil;
@@ -53,9 +60,10 @@ public class AuthController {
 			final String jwttoken=jwtutil.generateToken(userDetails);
 			ResponseCookie cookie=ResponseCookie.from("jwt", jwttoken)
 										.httpOnly(true)
+									.secure(cookieSecure)
 										.path("/")
 										.maxAge(Duration.ofDays(1))
-										.sameSite("Strict")
+									.sameSite(cookieSameSite)
 										.build();
 			return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE,cookie.toString())
 					.body(new AuthResponse(request.getEmail(),jwttoken));
@@ -146,10 +154,10 @@ public class AuthController {
 	{
 		ResponseCookie cookie=ResponseCookie.from("jwt","")
 										.httpOnly(true)
-										.secure(false)
+									.secure(cookieSecure)
 										.path("/")
 										.maxAge(0)
-										.sameSite("Strict")
+									.sameSite(cookieSameSite)
 										.build();
 		return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE,cookie.toString()).body("Logged Out Successfully");
 	}

@@ -86,6 +86,7 @@ const ResetPassword = () => {
             }
         } catch (error) {
             toast.error("Something went wrong, please try again.");
+            
             toast.error(error.message)
             
         } finally {

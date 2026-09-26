@@ -2,6 +2,7 @@ package com.project.checkpoint.config;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,6 +32,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+	@Value("${app.cors.allowed-origin:http://localhost:5173}")
+	private String frontendOrigin;
+
 	private final AppUserDetailsService appUserDetailsService;
 	private final JwtRequestFilter jwtRequestFilter;
 	private final customAuthenticationEntryPoint customauthenticationEntryPoint;
@@ -44,7 +48,7 @@ public class SecurityConfig {
             CorsConfiguration config = new CorsConfiguration();
 
             config.setAllowedOrigins(
-                List.of("http://localhost:5173")
+				List.of(frontendOrigin)
             );
 
             config.setAllowedMethods(
@@ -93,7 +97,7 @@ public class SecurityConfig {
 	public CorsConfigurationSource corsconfigurationsource()
 	{
 		CorsConfiguration config=new CorsConfiguration();
-		config.setAllowedOrigins(List.of("http://localhost:5173"));
+		config.setAllowedOrigins(List.of(frontendOrigin));
 		config.setAllowedMethods(List.of("GET","POST","PUT","DELETE","PATCH","OPTIONS"));
 		config.setAllowedHeaders(List.of("Authorization","Content-Type"));
 		config.setAllowCredentials(true);
