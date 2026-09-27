@@ -100,7 +100,7 @@ const ResetPassword = () => {
 
             <Link to="/" className="position-absolute top-0 start-0 p-4 d-flex align-items-center gap-2 text-decoration-none">
                 <img src={assets.logo} alt="logo" height={32} width={32} />
-                <span className="fs-4 fw-semibold text-light">Authify</span>
+                <span className="fs-4 fw-semibold text-light">checkpoint</span>
             </Link>
 
             {/* Reset password card */}
