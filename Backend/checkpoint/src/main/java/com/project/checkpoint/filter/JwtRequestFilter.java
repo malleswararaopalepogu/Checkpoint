@@ -27,7 +27,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 	private final AppUserDetailsService appUserDetailsService;
 	private final JwtUtil jwtutil;
 	
+<<<<<<< HEAD
 	private static final List<String> PUBLIC_URLS=List.of("/login","/register","/send-reset-otp","/reset-password","/logout","/is-authenticated");
+=======
+	private static final List<String> PUBLIC_URLS=List.of("/login","/register","/send-reset-otp","/reset-password","/logout","/is-authenticated","/error");
+>>>>>>> 0a3e7353cb845715ee60a13c0acf04416f34c639
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
@@ -41,6 +45,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 		if (contextPath != null && !contextPath.isBlank() && requestUri.startsWith(contextPath)) {
 			requestUri = requestUri.substring(contextPath.length());
 		}
+		System.out.println("JWT_FILTER => Method: " + request.getMethod()
+			+ ", OriginalURI: " + request.getRequestURI()
+			+ ", StrippedURI: " + requestUri
+			+ ", isPublic: " + PUBLIC_URLS.contains(requestUri));
 		if(PUBLIC_URLS.contains(requestUri))
 		{
 			filterChain.doFilter(request, response);

@@ -67,7 +67,11 @@ public class SecurityConfig {
 			.csrf(AbstractHttpConfigurer::disable)
 			.authorizeHttpRequests(auth->auth
 					.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+<<<<<<< HEAD
 					.requestMatchers("/login","/register","/send-reset-otp","/logout","/reset-password","/is-authenticated")
+=======
+					.requestMatchers("/login", "/register", "/send-reset-otp", "/logout", "/reset-password", "/is-authenticated", "/error")
+>>>>>>> 0a3e7353cb845715ee60a13c0acf04416f34c639
 					.permitAll().anyRequest().authenticated())
 			.sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.logout(AbstractHttpConfigurer :: disable)
