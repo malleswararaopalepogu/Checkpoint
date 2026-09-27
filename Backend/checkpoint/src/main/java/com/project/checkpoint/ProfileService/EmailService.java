@@ -3,6 +3,7 @@ package com.project.checkpoint.ProfileService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ public class EmailService {
 	@Value("${spring.mail.properties.mail.smtp.from}")
 	private String fromEmail;
 	
+	@Async
 	public void sendWelcomeEmail(String toEmail,String name)
 	{
 		SimpleMailMessage message=new SimpleMailMessage();
@@ -26,6 +28,7 @@ public class EmailService {
 		mailsender.send(message);
 	}
 	
+	@Async
 	public void sendResetOTPemail(String toEmail,String otp)
 	{
 		SimpleMailMessage message=new SimpleMailMessage();
@@ -36,6 +39,7 @@ public class EmailService {
 		mailsender.send(message);
 	}
 	
+	@Async
 	public void sendOTP(String toEmail,String otp)
 	{
 		SimpleMailMessage message=new SimpleMailMessage();
@@ -46,3 +50,4 @@ public class EmailService {
 		mailsender.send(message);
 	}
 }
+
