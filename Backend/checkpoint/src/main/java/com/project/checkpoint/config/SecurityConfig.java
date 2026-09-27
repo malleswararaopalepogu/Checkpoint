@@ -39,31 +39,7 @@ public class SecurityConfig {
 	public SecurityFilterChain securityfilterchain(HttpSecurity http) throws Exception
 	{
 		http
-        .cors(cors -> cors.configurationSource(request -> {
-
-            CorsConfiguration config = new CorsConfiguration();
-
-            config.setAllowedOriginPatterns(
-                List.of("frontendOrigin", "http://localhost:5173", "http://127.0.0.1:5173")
-            );
-
-            config.setAllowedMethods(
-                List.of(
-                    "GET",
-                    "POST",
-                    "PUT",
-                    "DELETE",
-                    "PATCH",
-                    "OPTIONS"
-                )
-            );
-
-            config.setAllowedHeaders(List.of("*"));
-
-            config.setAllowCredentials(true);
-
-            return config;
-        }))
+			.cors(cors -> cors.configurationSource(corsconfigurationsource()))
 			.csrf(AbstractHttpConfigurer::disable)
 			.authorizeHttpRequests(auth->auth
 					.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
@@ -83,19 +59,19 @@ public class SecurityConfig {
 		return new BCryptPasswordEncoder();
 	}
 	
-//	@Bean
-//	public CorsFilter corsfilter()
-//	{
-//		return new CorsFilter(corsconfigurationsource());
-//	}
-	
 	@Bean
 	public CorsConfigurationSource corsconfigurationsource()
 	{
 		CorsConfiguration config=new CorsConfiguration();
-		config.setAllowedOriginPatterns(List.of("frontendOrigin", "http://localhost:5173", "http://127.0.0.1:5173"));
+		config.setAllowedOriginPatterns(List.of(
+			"*",
+			"http://localhost:5173",
+			"http://127.0.0.1:5173",
+			"https://*.vercel.app"
+		));
 		config.setAllowedMethods(List.of("GET","POST","PUT","DELETE","PATCH","OPTIONS"));
 		config.setAllowedHeaders(List.of("*"));
+		config.setExposedHeaders(List.of("Set-Cookie", "Authorization"));
 		config.setAllowCredentials(true);
 		
 		UrlBasedCorsConfigurationSource source=new UrlBasedCorsConfigurationSource();
