@@ -5,7 +5,7 @@ Checkpoint is a **full-stack authentication application** built using **React, S
 ## 🚀 Live Demo
 
 **Frontend:**
-https://checkpoint1-murex.vercel.app/login
+https://checkpoint1-murex.vercel.app/
 
 **GitHub:**
 https://github.com/malleswararaopalepogu/Checkpoint
