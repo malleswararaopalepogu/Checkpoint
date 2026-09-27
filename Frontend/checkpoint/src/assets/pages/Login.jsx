@@ -18,6 +18,7 @@ const Login = () =>
 
     const onSubmitHandler = async (e) => {
         e.preventDefault();
+        if (loading) return;
         axios.defaults.withCredentials = true;
         setLoading(true);
         try {
@@ -25,31 +26,36 @@ const Login = () =>
                 //register API
                 const response = await axios.post(`${backendURL}/register`, {name, email, password});
                 if (response.status === 201) {
-                    navigate("/");
                     setName("");
                     setEmail("");
                     setPassword("");
-                    toast.success("Account created successfully.");
+                    toast.success("Account created successfully.", { toastId: "register-success" });
+                    navigate("/");
                 } else {
-                    toast.error("Email already exists");
+                    toast.error("Email already exists", { toastId: "register-error" });
                 }
             } 
              else {
                 //Login API
                 const response = await axios.post(`${backendURL}/login`, {email, password});
                 if (response.status === 200) {
+                    const token = response.data?.token || response.data?.jwt;
+                    if (token) {
+                        localStorage.setItem("token", token);
+                        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+                    }
                     setIsLoggedIn(true);
-                    getUserData();
+                    await getUserData(token);
+                    toast.success("Login successful.", { toastId: "login-success" });
                     navigate("/");
-                    toast.success("Login successful.");
                 } else {
-                    toast.error("Email/Password incorrect");
+                    toast.error("Email/Password incorrect", { toastId: "login-error" });
                 }
             }
         }catch(error) {
             console.log("LOGIN ERROR:", error);
             console.log("RESPONSE:", error.response);
-            toast.error(error.response?.data?.message || "Login Failed");
+            toast.error(error.response?.data?.message || "Login Failed", { toastId: "login-fail" });
         } finally {
             setLoading(false);
         }

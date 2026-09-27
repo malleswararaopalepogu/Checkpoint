@@ -14,32 +14,36 @@ export const AppContextProvider = (props) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userData, setUserData] = useState(false);
 
-    const getUserData = async () => {
+    const getUserData = async (authToken) => {
         try {
-            const response = await axios.get(backendURL+"/profile");
+            const token = authToken || localStorage.getItem("token");
+            const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+            const response = await axios.get(backendURL + "/profile", config);
             if (response.status === 200) {
                 setUserData(response.data);
-            } else {
-                toast.error("Unable to retrieve profile");
             }
-        }catch(error) {
-            toast.error(error.message);
+        } catch(error) {
+            console.error("Profile retrieval error:", error);
+            setUserData(false);
         }
     }
 
     const getAuthState = async () => {
         try {
-            const response = await axios.get(backendURL+"/is-authenticated");
+            const token = localStorage.getItem("token");
+            const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+            const response = await axios.get(backendURL + "/is-authenticated", config);
             if (response.status === 200 && response.data === true) {
                 setIsLoggedIn(true);
-                console.log("Calling getUserData()");
-                await getUserData();
+                await getUserData(token);
             } else {
-                console.log("User is NOT logged in");
                 setIsLoggedIn(false);
+                setUserData(false);
             }
         } catch (error) {
             console.error(error);
+            setIsLoggedIn(false);
+            setUserData(false);
         }
     }
 
